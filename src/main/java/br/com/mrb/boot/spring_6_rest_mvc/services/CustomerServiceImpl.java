@@ -52,4 +52,20 @@ public class CustomerServiceImpl implements CustomerService {
 
         return savedCustomer;
     }
+
+    @Override
+    public void update(UUID id, Customer customer) {
+        var update = customerMap.get(id);
+        if(update!=null){
+            update.setName(customer.getName());
+            update.setLastModifieldData(LocalDate.now());
+
+            customerMap.put(update.getId(), update);
+        }
+    }
+
+    @Override
+    public void deleteById(UUID id) {
+        customerMap.remove(id);
+    }
 }

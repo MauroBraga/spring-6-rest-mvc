@@ -1,5 +1,6 @@
 package br.com.mrb.boot.spring_6_rest_mvc.controller;
 
+import br.com.mrb.boot.spring_6_rest_mvc.model.Beer;
 import br.com.mrb.boot.spring_6_rest_mvc.model.Customer;
 import br.com.mrb.boot.spring_6_rest_mvc.services.CustomerService;
 import lombok.AllArgsConstructor;
@@ -20,11 +21,25 @@ public class CustomerController {
 
     private final CustomerService service;
 
+    @DeleteMapping(value = "/{customerId}")
+    public ResponseEntity deleteById(@PathVariable("customerId") UUID id){
+        service.deleteById(id);
+        return  new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping(value = "/{customerId}")
+    public ResponseEntity handlePut(@PathVariable("customerId") UUID id,@RequestBody Customer customer){
+        service.update(id,customer);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", "/api/v1/customer/" + id.toString());
+        return  new ResponseEntity(headers,HttpStatus.NO_CONTENT);
+    }
+
     @PostMapping
     public ResponseEntity handlePost(@RequestBody  Customer customer){
         Customer savedCustomer = service.save(customer);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "/api/v1/beer/" + savedCustomer.getId().toString());
+        headers.add("Location", "/api/v1/customer/" + savedCustomer.getId().toString());
         return  new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
